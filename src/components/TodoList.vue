@@ -1,7 +1,7 @@
 <template>
   <div>
-    <ul>
-        <li v-for="(todoItem,index) in todoItems" :key="todoItem.item" class="shadow">
+    <transition-group name="list" tag="ul">
+        <li v-for="(todoItem,index) in propsdata" :key="todoItem.item" class="shadow">
             <i class="fas fa-check checkBtn" :class ="{checkBtnCompleted: todoItem.completed}" @click="toggleComplete(todoItem, index)"></i>
             <span :class="{textCompleted:todoItem.completed}">{{todoItem.item}}</span>
             
@@ -9,43 +9,20 @@
                 <i class="fas fa-trash" ></i>
             </span>
         </li>
-
-    </ul>
+    </transition-group>
   </div>
 </template>
 
 <script>
 export default {
-    data(){
-        return{
-            todoItems: []
-        }
-    },
+    props:['propsdata'],
     methods:{
         removeTodo(item){
-            localStorage.removeItem(item.todoItem)
-            this.todoItems.splice(item.index,1)
+            this.$emit('removeItem',item)           
         },
-        toggleComplete(todoItem){
-            todoItem.completed = !todoItem.completed
-
-            localStorage.removeItem(todoItem.item)
-            localStorage.setItem(todoItem.item, JSON.stringify(todoItem))
-
+        toggleComplete(todoItem, index){
+            this.$emit('toggleItem',todoItem, index)
         }
-        
-    },
-    created(){
-        if(localStorage.length > 0){
-
-            for(var i= 0; i<localStorage.length; i++){
-                if(localStorage.key(i) !== 'loglevel:webpack-dev-server'){                    
-                    this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
-                }
-            }
-        }
-        console.log(this.todoItems)
-        
     }
 }
 </script>

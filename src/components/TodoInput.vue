@@ -5,23 +5,40 @@
     <span class="addContainer">
         <i class="fas fa-plus addBtn"  @click="addTodo"></i>
     </span>
+
+    <Modal v-if="showModal" @close="showModal = false">
+        <h3 slot="header">
+          경고!
+          <i class="fas fa-times" @click="showModal = false"></i>
+        </h3>
+        <h3 slot="body">아무것도 입력하지 않으셨습니다.</h3>
+        <h3 slot="footer">copy right @jaehan.kim</h3>
+    </Modal>
+
   </div>
 </template>
 
 <script>
+import Modal from './common/AlertModal.vue'
+
+
 export default {
+    components:{
+        Modal
+    },
     data(){
         return{
-            newTodoItem:""
+            newTodoItem:"",
+            showModal : false
         }
     },
     methods: {
         addTodo(){
             if(this.newTodoItem !== ''){
-                var obj = {completed: false, item: this.newTodoItem}
-                console.log('newTodoItem : ', this.newTodoItem)
-                localStorage.setItem(this.newTodoItem,JSON.stringify(obj))
+                this.$emit('addTodoItem',this.newTodoItem)
                 this.clearInput();
+            }else{
+                this.showModal = true
             }
             
         },
@@ -29,6 +46,7 @@ export default {
             this.newTodoItem=''
         }
     }
+    
 }
 </script>
 
